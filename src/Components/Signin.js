@@ -9,8 +9,8 @@ class Signin extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      signInEmail: '',
-      signInPassword: ''
+      signInEmail: 'l@l.com',
+      signInPassword: 'eeee'
     }
 
     this.signInRef = React.createRef();
@@ -31,12 +31,12 @@ class Signin extends Component {
     this.signInRef.current.focus();
 
     //remove this when pushing
-    // this.onSignIn()
+    this.onSignIn()
   }
 
   onSignIn(e) {
     //turn this on when pushing
-    e.preventDefault();
+    // e.preventDefault();
     fetch(`https://banana-crumble-42815.herokuapp.com/api/account/signin`, {
       method: 'POST',
       headers: {

@@ -4,8 +4,35 @@ import Stats from './Stats';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Modal from 'react-modal';
+import styled from 'styled-components';
+
+const Username = styled.div`
+  right: 14%;
+  position: absolute;
+`
+const Dropdown = styled.div`
+  right: 10%;
+  position: absolute;
+`
+
+const Brand = styled.div`
+  position: absolute;
+  left: 10%;
+  padding: 10px;
+`
+
+const AddGroup = styled.div`
+  position: absolute;
+  left: 50%;
+`
+
+const NavContainer = styled.div`
+  padding: 10px;
+`
 
 const customStyles = {
   content : {
@@ -22,8 +49,7 @@ const customStyles = {
 class Nav extends Component {
   constructor(props) {
     super(props)
-    console.log(props);
-    
+
 
     this.state = {
       modalIsOpen: false,
@@ -60,12 +86,15 @@ class Nav extends Component {
 
   render() {
     return (
-      <div>
-        <Navbar bg="light">
-          <Container>
-            <div>{this.props.username}</div>
-            <Button onClick={this.props.addModal}>Add Group</Button>
-            <NavDropdown title="More" id="basic-nav-dropdown">
+      <NavContainer>
+        <Navbar>
+          <Brand>
+            <Navbar.Brand href="/">GroupTimer</Navbar.Brand>
+          </Brand>
+          <Username>{this.props.username}</Username>
+          <Button onClick={this.props.addModal}>Add Group</Button>
+          <Dropdown>
+            <NavDropdown title="" id="basic-nav-dropdown">
               <NavDropdown.Item onClick={this.openModal}>About</NavDropdown.Item>
               <NavDropdown.Item onClick={this.openStatsModal}>Stats</NavDropdown.Item>
               <NavDropdown.Item href="https://github.com/lukemccrae/routine-timer">Github</NavDropdown.Item>
@@ -74,7 +103,7 @@ class Nav extends Component {
                 <Logout loggedOut={this.props.loggedOut} token={this.props.token}></Logout>
               </NavDropdown.Item>
             </NavDropdown>
-          </Container>
+          </Dropdown>
         </Navbar>
         <Modal
           isOpen={this.state.modalIsOpen}
@@ -97,7 +126,7 @@ class Nav extends Component {
           <h2 ref={subtitle => this.subtitle = subtitle}>Stats</h2>
           <Stats getTimers={this.props.getTimers} log={this.props.log}></Stats>
         </Modal>
-      </div>
+      </NavContainer>
     )
   }
 
