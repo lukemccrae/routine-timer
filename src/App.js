@@ -16,16 +16,18 @@ class App extends Component {
       token: '',
       timers: [],
       username: '',
-      log: [],
-      showRegister: false
+      showRegister: false,
+      userId: undefined
     }
     this.showRegister = this.showRegister.bind(this);
     this.loggedIn = this.loggedIn.bind(this);
     this.loggedOut = this.loggedOut.bind(this);
     this.getTimers = this.getTimers.bind(this);
+    this.getLog = this.getLog.bind(this);
   }
 
   componentDidMount() {
+    this.getLog();
     const obj = getFromStorage('the_main_app');
     if (obj && obj.token) {
       //verify token
@@ -59,7 +61,6 @@ class App extends Component {
       username: args.user,
       timers: args.timers,
       groups: args.groups,
-      log: args.log,
       userId: args.id
     })
   }
@@ -79,19 +80,31 @@ class App extends Component {
     .then(res => res.json())
     .then(json => {
       if(json.success) {
-        console.log(json.log);
-        
         this.setState({
           timers: json.timers,
           groups: json.groups,
           userName: json.username,
-          log: json.log
         })
       } else {
         this.setState({
           timerError: json.message,
           isLoading: false
         })
+      }
+    });
+  }
+
+  getLog() {
+    fetch(`https://me5hvm8691.execute-api.us-west-2.amazonaws.com/default/logHandler`, {
+      method: 'GET',
+    })
+    .then(res => res.json())
+    .then(json => {
+      if(json.success) {
+        console.log(json);
+        
+      } else {
+        console.log('no get');
       }
     });
   }
@@ -114,7 +127,6 @@ class App extends Component {
         username={this.state.username}
         getTimers={this.getTimers}
         loggedOut={this.loggedOut}
-        log={this.state.log}
         userId={this.state.userId}
       >
       </Dash>

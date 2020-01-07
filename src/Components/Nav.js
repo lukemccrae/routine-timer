@@ -22,6 +22,8 @@ const customStyles = {
 class Nav extends Component {
   constructor(props) {
     super(props)
+    console.log(props);
+    
 
     this.state = {
       modalIsOpen: false,

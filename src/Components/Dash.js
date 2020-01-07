@@ -42,14 +42,16 @@ const customStyles = {
 Modal.setAppElement('#root')
 
 class Dash extends Component {
-  static getDerivedStateFromProps(props, state) {
-    if (props.log !== state.log) {
-      return { log: props.log };
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(props, state) {
+  //   if (props.log !== state.log) {
+  //     return { log: props.log };
+  //   }
+  //   return null;
+  // }
   constructor(props) {
     super(props)
+    console.log(props);
+    
     
     this.state = {
       timers: [],
@@ -61,7 +63,8 @@ class Dash extends Component {
       timerLengthMins: 3,
       timerLengthSecs: 0,
       groupName: '',
-      groupToEdit: {}
+      groupToEdit: {},
+      log: []
     }
     this.addModal = this.addModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
@@ -72,11 +75,14 @@ class Dash extends Component {
     this.groupLink = this.groupLink.bind(this);
     this.noGroups = this.noGroups.bind(this);
     this.theirOrIts = this.theirOrIts.bind(this);
+    this.refreshLog = this.refreshLog.bind(this);
     
   }
 
   componentDidMount() {
-    this.props.getTimers(JSON.parse(localStorage.the_main_app).token);
+    if(localStorage.the_main_app.token) {
+      this.props.getTimers(JSON.parse(localStorage.the_main_app).token);
+    }
   }
 
   closeEditModal() {
@@ -124,6 +130,12 @@ class Dash extends Component {
         this.setState({timerError: json.message, isLoading: false})
       }
     });
+  }
+
+  refreshLog(log) {
+    this.setState({
+      log: log.data.Items
+    })
   }
 
   timeFormat(time, str) {
@@ -180,7 +192,7 @@ class Dash extends Component {
   render() {
     return (
       <div>
-        <Nav log={this.props.log} username={this.props.username} addModal={this.addModal} getTimers={this.props.getTimers} loggedOut={this.props.loggedOut}></Nav>
+        <Nav log={this.state.log} username={this.props.username} addModal={this.addModal} getTimers={this.props.getTimers} loggedOut={this.props.loggedOut}></Nav>
         <div>
           <Container>
             {this.noGroups()}
@@ -212,7 +224,7 @@ class Dash extends Component {
                     Start now and finish at&nbsp;
                     <TimeFinished group={g}></TimeFinished>.
                   </TimeTotal>
-                  <Start userId={this.props.userId} getTimers={this.props.getTimers} timeFormat={this.timeFormat} group={g}></Start>
+                  <Start refreshLog={this.refreshLog} userId={this.props.userId} getTimers={this.props.getTimers} timeFormat={this.timeFormat} group={g}></Start>
                 </div>
               )
             })}
