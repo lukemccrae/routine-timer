@@ -19,10 +19,14 @@ const Dropdown = styled.div`
   position: absolute;
 `
 
+const ButtonBox = styled.div`
+  margin: auto;
+`
+
 const Brand = styled.div`
-  position: absolute;
   left: 10%;
   padding: 10px;
+  position: absolute;
 `
 
 const AddGroup = styled.div`
@@ -32,6 +36,7 @@ const AddGroup = styled.div`
 
 const NavContainer = styled.div`
   padding: 10px;
+  border-bottom: 1px solid grey;
 `
 
 const customStyles = {
@@ -49,6 +54,8 @@ const customStyles = {
 class Nav extends Component {
   constructor(props) {
     super(props)
+    console.log(props);
+    
 
 
     this.state = {
@@ -90,9 +97,13 @@ class Nav extends Component {
         <Navbar>
           <Brand>
             <Navbar.Brand href="/">GroupTimer</Navbar.Brand>
+            {/* <div>Group Timer</div> */}
           </Brand>
+          <ButtonBox>
+            <Button onClick={this.props.addModal}>Add Group</Button>
+            <Button>Quick Timer</Button>
+          </ButtonBox>
           <Username>{this.props.username}</Username>
-          <Button onClick={this.props.addModal}>Add Group</Button>
           <Dropdown>
             <NavDropdown title="" id="basic-nav-dropdown">
               <NavDropdown.Item onClick={this.openModal}>About</NavDropdown.Item>

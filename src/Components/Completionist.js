@@ -16,21 +16,27 @@ class Completionist extends Component {
   }
   // https://banana-crumble-42815.herokuapp.com/log
   next() {
+    console.log(this.props);
+    
     this.setState({logging: true})
     const token = JSON.parse(localStorage.the_main_app).token;
-    fetch(`https://me5hvm8691.execute-api.us-west-2.amazonaws.com/default/logHandler`, {
+    fetch(`https://banana-crumble-42815.herokuapp.com/log`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         name: this.props.currentTimer.name,
-        timerLength: this.props.currentTimer.length,
+        length: this.props.currentTimer.length,
         token: token,
         date: Date.now(),
-        userId: this.props.userId
+        id: this.props.userId
       })
     }).then(res => res.json()).then(json => {
-      this.setState({logging: false})
+      console.log(json)
       if (json.success) {
-        this.props.refreshLog(json);
+        this.setState({logging: false})
+        this.props.refreshLog(json.log.log);
         this.props.nextTimer();
       } else {
         this.setState({timerError: json.message, isLoading: false})

@@ -4,9 +4,12 @@ import Start from './Start';
 import AddGroup from './AddGroup.js';
 import EditGroup from './EditGroup.js';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Modal from 'react-modal';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Button from 'react-bootstrap/Button';
 import TimeSum from './TimeSum.js';
 import TimeFinished from './TimeFinished.js';
 import styled from 'styled-components';
@@ -16,7 +19,9 @@ const TimerListBox = styled.div`
   align-items: space-between;
 `
 
-const TimerList = styled.ul`
+const TimerList = styled.div`
+  display: flex;
+  margin: auto auto auto 5px;
 `
 
 const ListedTimer = styled.li`
@@ -25,6 +30,33 @@ const ListedTimer = styled.li`
 
 const TimeTotal = styled.div`
   display: flex;
+  margin: auto 10px auto auto;
+`
+
+const GroupControls = styled.div`
+  display: flex;
+  & > Button {
+    padding: 5px;
+  }
+`
+
+const GroupNameParent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 10%;
+`
+
+const Group = styled.div`
+  display: flex;
+  padding: 5px;
+  margin: 3px;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 5px;
+  border-color: grey;
+`
+const GroupName = styled.h5`
+  margin: auto auto auto 5px;
 `
 
 const customStyles = {
@@ -42,6 +74,8 @@ const customStyles = {
 Modal.setAppElement('#root')
 
 class Dash extends Component {
+
+  //refresh component on props change
   // static getDerivedStateFromProps(props, state) {
   //   if (props.log !== state.log) {
   //     return { log: props.log };
@@ -50,7 +84,6 @@ class Dash extends Component {
   // }
   constructor(props) {
     super(props)
-    console.log(props);
     
     
     this.state = {
@@ -76,13 +109,29 @@ class Dash extends Component {
     this.noGroups = this.noGroups.bind(this);
     this.theirOrIts = this.theirOrIts.bind(this);
     this.refreshLog = this.refreshLog.bind(this);
+    this.getLog = this.getLog.bind(this);
     
   }
 
   componentDidMount() {
-    if(localStorage.the_main_app.token) {
-      this.props.getTimers(JSON.parse(localStorage.the_main_app).token);
-    }
+    // if(localStorage.the_main_app.token != undefined) {
+      this.getLog(JSON.parse(localStorage.the_main_app).token);
+    // }
+  }
+
+  getLog(token) {
+    fetch(`http://localhost:3000/log?token=${token}`, {
+      method: 'GET',
+    })
+    .then(res => res.json())
+    .then(json => {
+      if(json.success) {
+        this.refreshLog(json.log)
+        
+      } else {
+        console.log('no get');
+      }
+    });
   }
 
   closeEditModal() {
@@ -134,7 +183,7 @@ class Dash extends Component {
 
   refreshLog(log) {
     this.setState({
-      log: log.data.Items
+      log: log
     })
   }
 
@@ -195,37 +244,36 @@ class Dash extends Component {
         <Nav log={this.state.log} username={this.props.username} addModal={this.addModal} getTimers={this.props.getTimers} loggedOut={this.props.loggedOut}></Nav>
         <div>
           <Container>
-            {this.noGroups()}
+              {this.noGroups()}
             {this.props.groups.map(g => {
               return (
-                <div className="group" key={g._id}>
-                  <div className="groupNameParent">
-                    <h3>{g.name}</h3>
-                    <DropdownButton id="dropdown-basic-button" title="">
-                      <Dropdown.Item onClick={() => this.deleteGroup(g)}>Delete</Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.editGroup(g)}>Edit</Dropdown.Item>
-                    </DropdownButton>
-                  </div>
+                <Group key={g._id}>
+                  <GroupNameParent>
+                    <GroupName>{g.name}</GroupName>
+                  </GroupNameParent>
                   <TimerList>
                     {g.timers.map(t => {
                       return (
                         <TimerListBox key={t.id}>
-                          <ListedTimer>{t.name}</ListedTimer>
+                          <ListedTimer>{t.name}{t == g.timers[g.timers.length-1] ? '.' : ','}</ListedTimer>
                           <div>&nbsp;</div>
-                          <TimeSum timers={[t]}></TimeSum>
                         </TimerListBox>
+
                       )
                       })
                     }
                   </TimerList>
                   <TimeTotal>
-                    Total:&nbsp;
-                    <TimeSum timers={g.timers}></TimeSum> 
-                    Start now and finish at&nbsp;
-                    <TimeFinished group={g}></TimeFinished>.
-                  </TimeTotal>
-                  <Start refreshLog={this.refreshLog} userId={this.props.userId} getTimers={this.props.getTimers} timeFormat={this.timeFormat} group={g}></Start>
-                </div>
+                      <TimeSum timers={g.timers}></TimeSum> 
+                    </TimeTotal>
+                  <GroupControls>
+                    <Start refreshLog={this.refreshLog} userId={this.props.userId} getTimers={this.props.getTimers} timeFormat={this.timeFormat} group={g}></Start>
+                    <DropdownButton title="">
+                        <Dropdown.Item onClick={() => this.deleteGroup(g)}>Delete</Dropdown.Item>
+                        <Dropdown.Item onClick={() => this.editGroup(g)}>Edit</Dropdown.Item>
+                      </DropdownButton>
+                  </GroupControls>
+                </Group>
               )
             })}
           </Container>

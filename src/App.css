@@ -19,15 +19,8 @@
   color: #61dafb;
 }
 
-#dropdown-basic-button {}
-
 .countdownDisplay {
   display: flex;
-}
-
-.groupNameParent {
-  display: flex;
-  justify-content: space-between;
 }
 
 .displayTime {
@@ -45,13 +38,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-.group {
-  padding: 5px;
-  margin: 3px;
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 5px;
-  border-color: grey;
 }

@@ -12,6 +12,7 @@ const StatBox = styled.div`
 const Stats = ({log}) => {
     console.log(log);
     
+    
     let counter = [];
 
     function Stat(name, length, key) {

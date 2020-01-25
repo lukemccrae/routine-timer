@@ -23,17 +23,14 @@ class App extends Component {
     this.loggedIn = this.loggedIn.bind(this);
     this.loggedOut = this.loggedOut.bind(this);
     this.getTimers = this.getTimers.bind(this);
-    this.getLog = this.getLog.bind(this);
   }
 
   componentDidMount() {
-    this.getLog();
     const obj = getFromStorage('the_main_app');
     if (obj && obj.token) {
       //verify token
       fetch('https://banana-crumble-42815.herokuapp.com/api/account/verify?token=' + obj.token).then(res => res.json()).then(json => {
         if (json.success) {
-          console.log(json);
           this.setState({token: obj.token, isLoading: false})
         } else {
           this.setState({isLoading: false})
@@ -90,21 +87,6 @@ class App extends Component {
           timerError: json.message,
           isLoading: false
         })
-      }
-    });
-  }
-
-  getLog() {
-    fetch(`https://me5hvm8691.execute-api.us-west-2.amazonaws.com/default/logHandler`, {
-      method: 'GET',
-    })
-    .then(res => res.json())
-    .then(json => {
-      if(json.success) {
-        console.log(json);
-        
-      } else {
-        console.log('no get');
       }
     });
   }

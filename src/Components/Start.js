@@ -82,7 +82,7 @@ class Start extends Component {
       let currentTimerIndex = this.state.currentTimerIndex;
       currentTimerIndex = ++currentTimerIndex;
       this.setState({currentTimerIndex}, () =>
-      console.log()
+      console.log('hi')
       );
     } else {
       this.closeModal();
