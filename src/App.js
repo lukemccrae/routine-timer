@@ -76,6 +76,8 @@ class App extends Component {
     })
     .then(res => res.json())
     .then(json => {
+      console.log(json);
+      
       if(json.success) {
         this.setState({
           timers: json.timers,

@@ -101,7 +101,6 @@ class Nav extends Component {
           </Brand>
           <ButtonBox>
             <Button onClick={this.props.addModal}>Add Group</Button>
-            <Button>Quick Timer</Button>
           </ButtonBox>
           <Username>{this.props.username}</Username>
           <Dropdown>

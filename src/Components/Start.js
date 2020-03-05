@@ -29,11 +29,14 @@ const customStyles = {
 class Start extends Component {
   constructor(props) {
     super(props)
+    console.log(props);
+    
 
     this.state = {
       modalIsOpen: false,
       promptModalIsOpen: false,
       currentTimerIndex: 0,
+      logging: false
     }
     this.start = this.start.bind(this);
     this.openModal = this.openModal.bind(this);
@@ -45,9 +48,8 @@ class Start extends Component {
     this.formatCountdown = this.formatCountdown.bind(this);
     this.pause = this.pause.bind(this);
     this.unPause = this.unPause.bind(this);
+    this.next = this.next.bind(this);
   }
-
-
 
   openModal() {
     this.setState({modalIsOpen: true});
@@ -82,7 +84,7 @@ class Start extends Component {
       let currentTimerIndex = this.state.currentTimerIndex;
       currentTimerIndex = ++currentTimerIndex;
       this.setState({currentTimerIndex}, () =>
-      console.log('hi')
+      console.log()
       );
     } else {
       this.closeModal();
@@ -111,11 +113,14 @@ class Start extends Component {
     let renderer = ({ minutes, seconds, completed }) => {
       //not sure if this will cause problems later.... if I leave seconds as a number it won't show two zeros
       if(minutes === 0) minutes = '00';
+      if(minutes.length == undefined) minutes = '0' + minutes;
+      
+      
       if(seconds === 0) seconds = '00';
-      if(seconds < 10) seconds = '0' + seconds;
+      if(seconds < 10 & seconds != '00') seconds = '0' + seconds;
       if (completed) {
         // Render a completed state
-        return (<Completionist refreshLog={this.props.refreshLog} userId={this.props.userId} getTimers={this.props.getTimers} currentTimer={timer} nextTimer={this.nextTimer}></Completionist>)
+        return (<Completionist final={true} logging={this.state.logging} currentTimer={timer} next={this.next}></Completionist>)
       } else {
         // Render a countdown
         return (
@@ -128,11 +133,11 @@ class Start extends Component {
       }
     };
 
-      let countdownComponent = (
-        <Countdown controlled={false} renderer={renderer} date={this.formatCountdown(timer)}>
-          <Completionist getTimers={this.props.getTimers} currentTimer={timer} nextTimer={this.nextTimer}></Completionist>
-        </Countdown>
-      )
+    let countdownComponent = (
+      <Countdown controlled={false} renderer={renderer} date={this.formatCountdown(timer)}>
+        <Completionist getTimers={this.props.getTimers} currentTimer={timer} nextTimer={this.nextTimer}></Completionist>
+      </Countdown>
+    )
 
     let displayComponent = (
       <div>
@@ -158,6 +163,32 @@ class Start extends Component {
       }
     }
   }
+
+  next(currentTimer) {
+    this.setState({logging: true})
+    const token = JSON.parse(localStorage.the_main_app).token;
+    fetch(`https://banana-crumble-42815.herokuapp.com/log`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: currentTimer.name,
+        length: currentTimer.length,
+        token: token,
+        date: Date.now(),
+        id: this.props.userId
+      })
+    }).then(res => res.json()).then(json => {
+      if (json.success) {
+        this.setState({logging: false})
+        this.props.refreshLog(json.log.log);
+        this.nextTimer();
+      } else {
+        this.setState({timerError: json.message, isLoading: false})
+      }
+    });
+  };
 
   render() {
     return (

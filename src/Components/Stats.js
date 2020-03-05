@@ -10,8 +10,6 @@ const StatBox = styled.div`
 `
 
 const Stats = ({log}) => {
-    console.log(log);
-    
     
     let counter = [];
 
@@ -41,8 +39,6 @@ const Stats = ({log}) => {
 
     //sort logs
     counter.sort((a, b) => parseFloat(b.length) - parseFloat(a.length));
-
-    
     
     return (
         <div>{counter.map(l => {

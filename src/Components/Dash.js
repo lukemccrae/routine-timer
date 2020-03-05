@@ -21,7 +21,8 @@ const TimerListBox = styled.div`
 
 const TimerList = styled.div`
   display: flex;
-  margin: auto auto auto 5px;
+  margin: auto auto auto 25px;
+  overflow: hidden;
 `
 
 const ListedTimer = styled.li`
@@ -96,6 +97,11 @@ class Dash extends Component {
       timerLengthMins: 3,
       timerLengthSecs: 0,
       groupName: '',
+      logTime: {
+        day: 86400000,
+        week: 604800000,
+        month: 2592000000
+      },
       groupToEdit: {},
       log: []
     }
@@ -120,14 +126,13 @@ class Dash extends Component {
   }
 
   getLog(token) {
-    fetch(`http://localhost:3000/log?token=${token}`, {
+    fetch(`https://banana-crumble-42815.herokuapp.com/log?token=${token}&period=${this.state.logTime.week}`, {
       method: 'GET',
     })
     .then(res => res.json())
     .then(json => {
       if(json.success) {
         this.refreshLog(json.log)
-        
       } else {
         console.log('no get');
       }
@@ -267,7 +272,7 @@ class Dash extends Component {
                       <TimeSum timers={g.timers}></TimeSum> 
                     </TimeTotal>
                   <GroupControls>
-                    <Start refreshLog={this.refreshLog} userId={this.props.userId} getTimers={this.props.getTimers} timeFormat={this.timeFormat} group={g}></Start>
+                    <Start logging={this.state.logging} refreshLog={this.refreshLog} userId={this.props.userId} getTimers={this.props.getTimers} timeFormat={this.timeFormat} group={g}></Start>
                     <DropdownButton title="">
                         <Dropdown.Item onClick={() => this.deleteGroup(g)}>Delete</Dropdown.Item>
                         <Dropdown.Item onClick={() => this.editGroup(g)}>Edit</Dropdown.Item>
