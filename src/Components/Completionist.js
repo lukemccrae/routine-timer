@@ -29,10 +29,9 @@ function Completionist(props) {
   function next() {
     setLogging(true);
 
-    const token = JSON.parse(localStorage.the_main_app).token;
     props.nextTimer();
-    if(token !== undefined) {
-      logStats(token)
+    if(JSON.parse(localStorage.the_main_app).token !== undefined) {
+      logStats(JSON.parse(localStorage.the_main_app).token)
     }
   }
 

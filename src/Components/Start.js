@@ -40,6 +40,7 @@ function Start(props) {
   }
 
   function nextTimer() {
+    console.log("next")
     let tempColors = colors;
     tempColors[currentTimerIndex] = 'white';
     setColors(tempColors);

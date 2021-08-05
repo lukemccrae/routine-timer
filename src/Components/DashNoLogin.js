@@ -70,7 +70,6 @@ const Divider = styled.div`
 `
 
 function DashNoLogin(props) {
-  console.log(props)
   const [newTimerName, setNewTimerName] = useState("Task 2");
   const [newTimerLength, setNewTimerLength] = useState(15);
   const [showDetails, setShowDetails] = useState(false);
@@ -104,6 +103,7 @@ function DashNoLogin(props) {
     hash: "newgroup",
     timerGoing: false,
     editOpen: true,
+    details: {autoNext: false}
   });
 
   useEffect(() => {
